@@ -38,6 +38,11 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.seokjinkim</groupId>
+            <artifactId>makelibrary</artifactId>
+            <version>0.0.2</version>
+        </dependency>
     </dependencies>
     
     <!-- Package as an executable jar -->
