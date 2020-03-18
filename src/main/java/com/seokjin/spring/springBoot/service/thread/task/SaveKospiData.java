@@ -1,36 +1,32 @@
 package com.seokjin.spring.springBoot.service.thread.task;
 
-import java.text.NumberFormat;
-import java.util.Date;
+import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import com.seokjin.kim.library.JsoupCustom;
 import com.seokjin.kim.library.StringToEveryThing;
 import com.seokjin.spring.springBoot.jpa.Kospi200Model;
-import com.seokjin.spring.springBoot.jpa.repository.Kospi200Repository;
 import com.seokjin.spring.springBoot.service.thread.SharedObject;
-import com.seokjin.spring.springBoot.service.thread.ThreadPoolCustom;
+
 
 @Service
 public class SaveKospiData implements Runnable {
     
-    @Autowired
-    Kospi200Repository kospiDB;
-    
-    @Autowired
-    SaveKospiDataDB saveKospiDB;
-    
     private SharedObject<String> shared;
+    private JdbcTemplate jdTemplate;
     
     public SaveKospiData() {}
     
-    public SaveKospiData( SharedObject<String> shared ) {
+    public SaveKospiData( SharedObject<String> shared , JdbcTemplate jdTemplate ) {
         this.shared = shared;
+        this.jdTemplate = jdTemplate;
     }
     
 
@@ -43,9 +39,6 @@ public class SaveKospiData implements Runnable {
         this.shared = shared;
     }
     
-    @Autowired
-    ThreadPoolCustom pool;
-
 
     @Override
     public void run() {
@@ -60,7 +53,7 @@ public class SaveKospiData implements Runnable {
             if( td.size() > 0 ) {
                 
                 String dateString = tr.select("td:nth-of-type(1)").text();
-                Date date = StringToEveryThing.getStringToDate(dateString, "yyyy-mm-dd");
+                String date = StringToEveryThing.getStringToDateDash(dateString);
                 
                 Double todayPrice = StringToEveryThing.getStringToDouble(tr.select("td:nth-of-type(2)").text()).doubleValue();
                 
@@ -70,19 +63,29 @@ public class SaveKospiData implements Runnable {
                 upDownSize = isDown ? upDownSize*-1 : upDownSize;
                 
                 Double percentage = StringToEveryThing.getStringToDouble(tr.select("td:nth-of-type(4)").text()).doubleValue();
-                percentage = isDown ? upDownSize*-1 : upDownSize;
                 
                 Double volumn = StringToEveryThing.getStringToDouble(tr.select("td:nth-of-type(5)").text()).doubleValue();
                 
-                Kospi200Model kospi = new Kospi200Model(date, todayPrice, upDownSize, percentage, volumn);
+                //Kospi200Model kospi = new Kospi200Model(date, todayPrice, upDownSize, percentage, volumn);
+                if ( StringUtils.isNoneBlank(dateString) ) {
+                    String quryInsert = "INSERT INTO kospi200model(date,percentage,today_price,up_down_size,volumn) VALUES ( ? , ? , ? , ? , ? )";
+                    String quryUpdate = "UPDATE kospi200model SET percentage = ?, today_price = ?, up_down_size = ?, volumn = ? WHERE date = ? ";
+                    String quryOne = "SELECT * FROM kospi200model WHERE date = ?";
+                    System.out.println(date);
+                    try {
+                        List<Kospi200Model>  oneData = jdTemplate.query(quryOne, new BeanPropertyRowMapper<Kospi200Model>(Kospi200Model.class), date);
+                        if( oneData.size() > 0 ) {
+                            jdTemplate.update(quryUpdate, percentage,todayPrice,upDownSize,volumn, date );
+                        } else {
+                            jdTemplate.update(quryInsert,date,percentage,todayPrice,upDownSize,volumn);
+                        }
+                        
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                    }
+                }
                 
-                
-                SharedObject<Kospi200Model> asdads = new SharedObject<Kospi200Model>();
-                System.out.println(dateString);
-                asdads.setShared(kospi);
-                saveKospiDB.setShared(asdads);
-                kospiDB.save(kospi);
-                //pool.execute(saveKospiDB);
+                //kospiDB.save(kospi);
             }
             
         }

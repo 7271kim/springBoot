@@ -5,6 +5,7 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -13,12 +14,12 @@ import javax.persistence.TemporalType;
 public class Kospi200Model {
     
     @Id 
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @Temporal(TemporalType.DATE)
+    //@Temporal(TemporalType.DATE)
     @Column( nullable = false, unique=true )
-    private Date date;
+    private String date;
     
     @Column( nullable = false )
     private Double todayPrice;
@@ -34,7 +35,7 @@ public class Kospi200Model {
     
     public Kospi200Model() {}
 
-    public Kospi200Model(Date date, Double todayPrice, Double upDownSize, Double percentage, Double volumn) {
+    public Kospi200Model(String date, Double todayPrice, Double upDownSize, Double percentage, Double volumn) {
         this.date = date;
         this.todayPrice = todayPrice;
         this.upDownSize = upDownSize;
@@ -50,11 +51,11 @@ public class Kospi200Model {
         this.id = id;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 

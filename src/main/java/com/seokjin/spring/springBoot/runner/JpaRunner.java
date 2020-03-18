@@ -19,7 +19,8 @@ public class JpaRunner implements ApplicationRunner  {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        getKospi200.putKospi200DataIntoDB();
+        //getKospi200.putKospiTotalDataIntoDB();
+        getKospi200.putKospiDataIntoDB(1);
     }
 
 }

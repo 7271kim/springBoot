@@ -4,9 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import com.seokjin.kim.library.HttpClientCustom;
+import com.seokjin.spring.springBoot.jpa.repository.Kospi200Repository;
 import com.seokjin.spring.springBoot.service.GetKospi200;
 import com.seokjin.spring.springBoot.service.thread.SharedObject;
 import com.seokjin.spring.springBoot.service.thread.ThreadPoolCustom;
@@ -19,15 +21,20 @@ public class GetKospi200Impl  implements GetKospi200{
     ThreadPoolCustom pool;
     
     @Autowired
-    SharedObject<String> shared;
+    Kospi200Repository kospiDB;
     
     @Autowired
-    SaveKospiData saveKospi;
+    JdbcTemplate jdTemplate;
     
     @Override
-    public void putKospi200DataIntoDB() {
+    public void putKospiTotalDataIntoDB() {
+        putKospiDataIntoDB(1313);
+    }
+
+    @Override
+    public void putKospiDataIntoDB(int pageNumber) {
         pool.getPool(10);
-        for (int index = 1; index <= 10; index++) {
+        for (int index = 1; index <= pageNumber; index++) {
             String url = "https://finance.naver.com/sise/sise_index_day.nhn";
             Map<String, String> params = new HashMap<String, String>();
             params.put("code","KOSPI");
@@ -35,8 +42,8 @@ public class GetKospi200Impl  implements GetKospi200{
             
             url = HttpClientCustom.getParamToString(url, params);
             
-            shared.setShared(url);
-            
+            SharedObject<String> shared = new SharedObject<String>(url);
+            SaveKospiData saveKospi = new SaveKospiData(shared, jdTemplate);
             saveKospi.setShared(shared);
             
             pool.execute(saveKospi);
