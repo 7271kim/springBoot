@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.seokjin.kim.library.JsoupCustom;
 import com.seokjin.kim.library.StringToEveryThing;
-import com.seokjin.spring.springBoot.jpa.Kospi200Model;
+import com.seokjin.spring.springBoot.jpa.KospiModel;
 import com.seokjin.spring.springBoot.service.thread.SharedObject;
 
 
@@ -67,13 +67,16 @@ public class SaveKospiData implements Runnable {
                 Double volumn = StringToEveryThing.getStringToDouble(tr.select("td:nth-of-type(5)").text()).doubleValue();
                 
                 //Kospi200Model kospi = new Kospi200Model(date, todayPrice, upDownSize, percentage, volumn);
+                String nameDB = KospiModel.class.getName().replace(KospiModel.class.getPackageName(), "").replace(".","");
+                nameDB = StringToEveryThing.getUpperCaseStringToLowercaseWithWant(nameDB, "_");
+                
                 if ( StringUtils.isNoneBlank(dateString) ) {
-                    String quryInsert = "INSERT INTO kospi200model(date,percentage,today_price,up_down_size,volumn) VALUES ( ? , ? , ? , ? , ? )";
-                    String quryUpdate = "UPDATE kospi200model SET percentage = ?, today_price = ?, up_down_size = ?, volumn = ? WHERE date = ? ";
-                    String quryOne = "SELECT * FROM kospi200model WHERE date = ?";
+                    String quryInsert = "INSERT INTO "+nameDB+"(date,percentage,today_price,up_down_size,volumn) VALUES ( ? , ? , ? , ? , ? )";
+                    String quryUpdate = "UPDATE "+nameDB+" SET percentage = ?, today_price = ?, up_down_size = ?, volumn = ? WHERE date = ? ";
+                    String quryOne = "SELECT * FROM "+nameDB+" WHERE date = ?";
                     System.out.println(date);
                     try {
-                        List<Kospi200Model>  oneData = jdTemplate.query(quryOne, new BeanPropertyRowMapper<Kospi200Model>(Kospi200Model.class), date);
+                        List<KospiModel>  oneData = jdTemplate.query(quryOne, new BeanPropertyRowMapper<KospiModel>(KospiModel.class), date);
                         if( oneData.size() > 0 ) {
                             jdTemplate.update(quryUpdate, percentage,todayPrice,upDownSize,volumn, date );
                         } else {

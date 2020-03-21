@@ -9,13 +9,13 @@ import org.springframework.stereotype.Service;
 
 import com.seokjin.kim.library.HttpClientCustom;
 import com.seokjin.spring.springBoot.jpa.repository.Kospi200Repository;
-import com.seokjin.spring.springBoot.service.GetKospi200;
+import com.seokjin.spring.springBoot.service.GetKospiData;
 import com.seokjin.spring.springBoot.service.thread.SharedObject;
 import com.seokjin.spring.springBoot.service.thread.ThreadPoolCustom;
 import com.seokjin.spring.springBoot.service.thread.task.SaveKospiData;
 
 @Service
-public class GetKospi200Impl  implements GetKospi200{
+public class GetKospiDataImpl  implements GetKospiData{
     
     @Autowired
     ThreadPoolCustom pool;
@@ -27,12 +27,12 @@ public class GetKospi200Impl  implements GetKospi200{
     JdbcTemplate jdTemplate;
     
     @Override
-    public void putKospiTotalDataIntoDB() {
-        putKospiDataIntoDB(1313);
+    public void getKospiTotalDataIntoDB() {
+        getKospiTodayDataIntoDB(1313);
     }
 
     @Override
-    public void putKospiDataIntoDB(int pageNumber) {
+    public void getKospiTodayDataIntoDB(int pageNumber) {
         pool.getPool(10);
         for (int index = 1; index <= pageNumber; index++) {
             String url = "https://finance.naver.com/sise/sise_index_day.nhn";

@@ -1,17 +1,13 @@
 package com.seokjin.spring.springBoot.jpa;
 
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 @Entity
-public class Kospi200Model {
+public class KospiModel {
     
     @Id 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,9 +29,9 @@ public class Kospi200Model {
     @Column( nullable = false )
     private Double volumn;
     
-    public Kospi200Model() {}
+    public KospiModel() {}
 
-    public Kospi200Model(String date, Double todayPrice, Double upDownSize, Double percentage, Double volumn) {
+    public KospiModel(String date, Double todayPrice, Double upDownSize, Double percentage, Double volumn) {
         this.date = date;
         this.todayPrice = todayPrice;
         this.upDownSize = upDownSize;
