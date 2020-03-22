@@ -47,6 +47,7 @@ public class SaveKospi200Data implements Runnable {
         
         Document doc = JsoupCustom.getGetDocumentFromURL(url);
         Elements trData = doc.select(".box_type_l table:nth-of-type(1) tr");
+        
         for (int index = 0; index < trData.size(); index++) {
             Element tr  = trData.get(index);
             Elements td = tr.select("td.no");
