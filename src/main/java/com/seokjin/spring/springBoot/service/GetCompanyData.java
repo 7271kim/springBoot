@@ -10,4 +10,11 @@ public interface GetCompanyData {
     public void getKospi200Code();
     public void getKospi200Code( int number);
     
+    /**
+     * 개별 종목 모든 주식 데이터 가지고 오기
+     * @param 
+     * @return 
+     */
+    public void getCompanyAll( int number);
+    
 }

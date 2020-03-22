@@ -19,9 +19,15 @@ public class JpaRunner implements ApplicationRunner  {
     
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        //getKospiDa.getKospiTotalDataIntoDB();
         //getKospiDa.getKospiTodayDataIntoDB(1314);
-        getCompanyData.getKospi200Code();
+        //getCompanyData.getKospi200Code();
+        //getCompanyData.getCompanyAll(200);
+        
+        
+        //매일매일 업데이트 부분
+        //getKospiDa.getKospiTodayDataIntoDB(1);
+        getCompanyData.getCompanyAll(1);
+       
     }
 
 }
