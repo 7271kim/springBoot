@@ -16,6 +16,17 @@ public class CompanyDefault {
     
     @Column( nullable = false, unique=true )
     private String companyName;
+    
+    @Column( nullable = true )
+    private String dartCode;
+
+    public String getDartCode() {
+        return dartCode;
+    }
+
+    public void setDartCode(String dartCode) {
+        this.dartCode = dartCode;
+    }
 
     public String getCompanyCode() {
         return companyCode;
@@ -40,7 +51,5 @@ public class CompanyDefault {
     public void setRank(Integer rank) {
         this.rank = rank;
     }
-    
-    
     
 }

@@ -17,4 +17,10 @@ public interface GetCompanyData {
      */
     public void getCompanyAll( int number);
     
+    /**
+     * Dart가 제공하는 xml파일에서 code부분 가지고 와서 세팅 
+     * @param 
+     * @return 
+     */
+    public void setCompanyDartCode();
 }

@@ -41,7 +41,7 @@ public class Company implements Serializable {
 
     @Column( nullable = false )
     private Double forignretentionRate;
-
+    
     @Id
     @ManyToOne
     private CompanyDefault companyDefault;

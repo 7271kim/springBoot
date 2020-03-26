@@ -4,13 +4,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import com.seokjin.kim.library.HttpClientCustom;
+import com.seokjin.kim.library.JsoupCustom;
 import com.seokjin.kim.library.StringToEveryThing;
+import com.seokjin.spring.springBoot.jpa.Company;
 import com.seokjin.spring.springBoot.jpa.CompanyDefault;
 import com.seokjin.spring.springBoot.jpa.KospiModel;
 import com.seokjin.spring.springBoot.service.GetCompanyData;
@@ -58,7 +64,7 @@ public class GetCompanyDataImpl  implements GetCompanyData{
     public void getCompanyAll( int number) {
         pool.getPool(10);
         
-        String nameDB = CompanyDefault.class.getName().replace(KospiModel.class.getPackageName(), "").replace(".","");
+        String nameDB = CompanyDefault.class.getName().replace(CompanyDefault.class.getPackageName(), "").replace(".","");
         nameDB = StringToEveryThing.getUpperCaseStringToLowercaseWithWant(nameDB, "_");
         String quryOne = "SELECT * FROM "+nameDB;
         List<CompanyDefault>  oneData = jdTemplate.query(quryOne, new BeanPropertyRowMapper<CompanyDefault>(CompanyDefault.class));
@@ -86,6 +92,41 @@ public class GetCompanyDataImpl  implements GetCompanyData{
             }
         }
         pool.destroy();
+    }
+
+    @Override
+    public void setCompanyDartCode() {
+        String quryOne = "SELECT * FROM company_default WHERE company_name = ?";
+        String quryUpdate = "UPDATE company_default SET dart_code = ? WHERE company_name = ?";
+        
+        Document doc = JsoupCustom.getGetDocumentFromXML("C:\\Users\\King\\Desktop\\dart\\sss.xml");
+        NodeList resultChild = doc.getChildNodes().item(0).getChildNodes();
+        
+        for (int index = 0; index < resultChild.getLength(); index++) {
+            NodeList listChild = resultChild.item(index).getChildNodes();
+            String code          = "";
+            String companyName   = "";
+            String modifyDate    = "";
+            for (int index2 = 0; index2 < listChild.getLength(); index2++) {
+                Node item = listChild.item(index2);
+                String name = item.getNodeName();
+                if( StringUtils.isNotBlank(name) ) {
+                    if( name.equals("corp_name") ) {
+                        companyName = item.getTextContent();
+                    } else if( name.equals("corp_code")  ) {
+                        code = item.getTextContent();
+                    } else if (name.equals("modify_date")) {
+                        modifyDate = item.getTextContent();
+                    }
+                }
+            }
+            if( StringUtils.isNotBlank(companyName) ) {
+                List<Map<String, Object>>  oneData =  jdTemplate.queryForList(quryOne,companyName);
+                if( oneData.size() > 0 ) {
+                    jdTemplate.update(quryUpdate,code,companyName);
+                }
+            }
+        }
     }
 
 }
