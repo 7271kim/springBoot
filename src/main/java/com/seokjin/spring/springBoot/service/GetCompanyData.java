@@ -22,5 +22,5 @@ public interface GetCompanyData {
      * @param 
      * @return 
      */
-    public void setCompanyDartCode();
+    public void setCompanyDartCode(String xmlPapth);
 }

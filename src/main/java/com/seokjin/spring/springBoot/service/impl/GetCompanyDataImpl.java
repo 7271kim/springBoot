@@ -95,11 +95,11 @@ public class GetCompanyDataImpl  implements GetCompanyData{
     }
 
     @Override
-    public void setCompanyDartCode() {
+    public void setCompanyDartCode( String xmlPapth ) {
         String quryOne = "SELECT * FROM company_default WHERE company_name = ?";
         String quryUpdate = "UPDATE company_default SET dart_code = ? WHERE company_name = ?";
         
-        Document doc = JsoupCustom.getGetDocumentFromXML("C:\\Users\\King\\Desktop\\dart\\sss.xml");
+        Document doc = JsoupCustom.getGetDocumentFromXML(xmlPapth);
         NodeList resultChild = doc.getChildNodes().item(0).getChildNodes();
         
         for (int index = 0; index < resultChild.getLength(); index++) {

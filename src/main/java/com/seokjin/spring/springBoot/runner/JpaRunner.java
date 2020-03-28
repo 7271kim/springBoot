@@ -19,13 +19,13 @@ public class JpaRunner implements ApplicationRunner  {
     
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        //getKospiDa.getKospiTodayDataIntoDB(1314); - 전체데이터
-        //getCompanyData.getKospi200Code(); - 코스피 200 종목 코드 
-        //getCompanyData.getCompanyAll(300); - 코스피 200 20년치 데이터 
-        //getCompanyData.setCompanyDartCode(); - dart에서 코드 얻기
+        //getKospiDa.getKospiTodayDataIntoDB(1314);// - 전체데이터
+        //getCompanyData.getKospi200Code();// - 코스피 200 종목 코드 
+        //getCompanyData.getCompanyAll(300);// - 코스피 200 20년치 데이터 
+        //getCompanyData.setCompanyDartCode("C:\\Users\\Jin\\Desktop\\dart\\Data\\CORPCODE.xml");// - dart에서 코드 얻기
         
         //매일매일 업데이트 부분
-        //getKospiDa.getKospiTodayDataIntoDB(1);
+        getKospiDa.getKospiTodayDataIntoDB(1);
         getCompanyData.getCompanyAll(1);
         
        
